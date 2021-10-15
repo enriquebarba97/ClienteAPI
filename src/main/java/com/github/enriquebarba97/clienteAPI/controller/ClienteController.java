@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -60,5 +62,22 @@ public class ClienteController {
 		}
 	}
 	
+	@PutMapping("/{id}")
+	public ClienteDTO updateCliente(@PathVariable Long id, @RequestBody SendClienteDTO clienteDTO) {
+		Cliente cliente = new Cliente(id, clienteDTO.getNombre(), clienteDTO.getTlf());
+		
+		Cliente result = clienteService.saveCliente(cliente);
+		
+		if(result == null) {
+			return new ClienteDTO(true, new Cliente(), "Ha habido un error añadiendo el cliente");
+		}else {
+			return new ClienteDTO(false, result, "");
+		}
+	}
+	
+	@DeleteMapping("/{id}")
+	public void deleteClienteById(@PathVariable Long id) {
+		clienteService.deleteCliente(id);
+	}
 	
 }
